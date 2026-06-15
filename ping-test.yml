@@ -12,10 +12,3 @@
     - name: 获取主机系统版本
       debug:
         msg: "主机 {{ ansible_hostname }} 系统是 {{ ansible_distribution }} {{ ansible_distribution_version }}"
-
-
-    # 任务3：显示 ping 结果
-    - name: 显示 ping 结果
-      debug:
-        msg: "{{ ping_result.stdout_lines }}"
-      when: ping_result is success
