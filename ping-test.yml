@@ -8,7 +8,3 @@
       ping:
       delegate_to: localhost
 
-    # 任务2：获取目标主机的操作系统版本
-    - name: 获取主机系统版本
-      debug:
-        msg: "主机 {{ ansible_hostname }} 系统是 {{ ansible_distribution }} {{ ansible_distribution_version }}"
