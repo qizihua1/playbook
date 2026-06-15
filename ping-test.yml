@@ -13,14 +13,8 @@
       debug:
         msg: "主机 {{ ansible_hostname }} 系统是 {{ ansible_distribution }} {{ ansible_distribution_version }}"
 
-    # 任务3：测试到百度的网络连通性
-    - name: 测试到百度的网络连通性
-      command: ping -c 2 baidu.com
-      register: ping_result
-      delegate_to: localhost
-      ignore_errors: yes
 
-    # 任务4：显示 ping 结果
+    # 任务3：显示 ping 结果
     - name: 显示 ping 结果
       debug:
         msg: "{{ ping_result.stdout_lines }}"
