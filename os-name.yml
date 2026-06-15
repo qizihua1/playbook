@@ -7,10 +7,6 @@
       debug:
         msg: "服务器IP: {{ ansible_default_ipv4.address }}"
 
-    - name: 显示所有IP地址
-      debug:
-        msg: "所有IP地址: {{ ansible_all_ipv4_addresses }}"
-
     - name: 显示主机名
       debug:
         msg: "主机名: {{ ansible_hostname }}"
@@ -19,6 +15,3 @@
       debug:
         msg: "系统版本: {{ ansible_distribution }} {{ ansible_distribution_version }}"
 
-    - name: 显示内核版本
-      debug:
-        msg: "内核版本: {{ ansible_kernel }}"
