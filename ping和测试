@@ -1,0 +1,27 @@
+---
+- name: 测试连通性和系统信息
+  hosts: all
+  gather_facts: yes
+  tasks:
+    # 任务1：ping 百度
+    - name: ping baidu.com
+      ping:
+      delegate_to: localhost
+
+    # 任务2：获取目标主机的操作系统版本
+    - name: 获取主机系统版本
+      debug:
+        msg: "主机 {{ ansible_hostname }} 系统是 {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    # 任务3：测试到百度的网络连通性
+    - name: 测试到百度的网络连通性
+      command: ping -c 2 baidu.com
+      register: ping_result
+      delegate_to: localhost
+      ignore_errors: yes
+
+    # 任务4：显示 ping 结果
+    - name: 显示 ping 结果
+      debug:
+        msg: "{{ ping_result.stdout_lines }}"
+      when: ping_result is success
