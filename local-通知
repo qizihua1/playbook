@@ -1,0 +1,51 @@
+---
+- name: 批量更新系统并发送通知
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  vars:
+    # 通知邮件收件人
+    notification_email: "ops@company.com"
+    # 邮件主题（根据需要修改）
+    email_subject: "Ansible 任务执行通知"
+
+  tasks:
+    # ============================================================
+    # 第一部分：对目标服务器的操作（在各目标机器上执行）
+    # ============================================================
+    - name: 更新系统包（CentOS/RHEL）
+      yum:
+        name: '*'
+        state: latest
+      when: ansible_os_family == "RedHat"
+      register: yum_result
+
+    - name: 更新系统包（Ubuntu/Debian）
+      apt:
+        name: '*'
+        state: latest
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+      register: apt_result
+
+    - name: 显示目标服务器信息
+      debug:
+        msg: "{{ inventory_hostname }} ({{ ansible_default_ipv4.address }}) 更新完成"
+
+    # ============================================================
+    # 第二部分：发送通知（委托到 AWX/控制节点执行）
+    # ============================================================
+    - name: 发送任务完成邮件通知
+      mail:
+        to: "{{ notification_email }}"
+        subject: "{{ email_subject }}"
+        body: |
+          任务：{{ ansible_playbook_name }}
+          完成时间：{{ ansible_date_time.iso8601 }}
+          目标服务器数量：{{ ansible_play_hosts_all | length }}
+          成功服务器：{{ ansible_play_hosts | length }}
+          失败服务器：{{ ansible_play_hosts_all | difference(ansible_play_hosts) | length }}
+      delegate_to: localhost
+      run_once: true
+      ignore_errors: yes  # 邮件发送失败不影响整体任务
